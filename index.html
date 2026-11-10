@@ -226,15 +226,16 @@ const t0 = performance.now(), dur = 1800;
 
 function confetti() {
   const bits = ["🎉", "✨", "🎒", "🚆", "🌴", "💛", "🍫", "🎈"];
-  for (let i = 0; i < 28; i++) {
+  for (let i = 0; i < 120; i++) {
     const s = document.createElement("span");
     s.className = "bit";
     s.textContent = bits[i % bits.length];
     s.style.left = Math.random() * 100 + "vw";
-    s.style.animationDuration = 2 + Math.random() * 2.5 + "s";
-    s.style.animationDelay = Math.random() * .6 + "s";
+    s.style.animationDuration = 2.5 + Math.random() * 3 + "s";
+    s.style.fontSize = 1.2 + Math.random() * 1.2 + "rem";
+    s.style.animationDelay = Math.random() * 2 + "s";
     document.body.appendChild(s);
-    setTimeout(() => s.remove(), 5500);
+    setTimeout(() => s.remove(), 8000);
   }
 }
 $("train").addEventListener("click", () => {
