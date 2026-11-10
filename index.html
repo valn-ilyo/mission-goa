@@ -142,7 +142,10 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:30px}
 <script>
 // ─── Config (edit this block, then commit) ───
 const CONFIG = {
-  goal: 400000,
+  // Total budget from the funding letters: Rs. 16,400 x 29 travellers
+  perPerson: 16400,
+  travellers: 29,
+  goal: 475600,
   departure: "2027-01-16T00:00:00+05:30",
   updated: "10 Nov 2026",
   // Add one line per new contribution; the total is summed automatically
@@ -202,7 +205,7 @@ const meals = Math.floor(raised / CONFIG.mealPerDay);
 $("facts").innerHTML =
   "<li>🚆 <b>" + tickets + "</b> one-way train tickets from Guwahati to Bengaluru</li>" +
   "<li>🍛 <b>" + meals + "</b> days of food for one person</li>" +
-  "<li>🎓 <b>" + (raised / 475600 * 100).toFixed(1) + "%</b> of the full budget of 29 travellers (₹4,75,600)</li>";
+  "<li>🎓 <b>" + (raised / CONFIG.perPerson * 100).toFixed(0) + "%</b> of one traveller’s full 13-day trip (" + inr(CONFIG.perPerson) + ")</li>";
 
 $("sources").innerHTML = CONFIG.contributions.map(c =>
   '<div class="src"><span>' + c.label + "</span><em>" + inr(c.amount) + "</em></div>").join("");
