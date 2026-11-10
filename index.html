@@ -54,10 +54,10 @@ h1{font-size:clamp(1.7rem,5vw,2.6rem);margin:0 0 4px;position:relative}
 .rail{position:absolute;left:0;right:0;top:62px;height:12px;background:var(--track);border-radius:8px}
 .fill{position:absolute;left:0;top:62px;height:12px;width:0;background:linear-gradient(90deg,var(--sun),var(--coral));border-radius:8px;transition:width 2s cubic-bezier(.2,.8,.2,1)}
 .ties{position:absolute;left:0;right:0;top:74px;height:8px;background:repeating-linear-gradient(90deg,var(--track) 0 3px,transparent 3px 16px);opacity:.9}
-.train{position:absolute;top:20px;font-size:2.4rem;left:0;transform:translateX(-50%);transition:left 2s cubic-bezier(.2,.8,.2,1);cursor:pointer;user-select:none;background:none;border:0;padding:0}
+.train{position:absolute;z-index:3;top:18px;line-height:1;font-size:2.4rem;left:0;transform:translateX(-50%);transition:left 2s cubic-bezier(.2,.8,.2,1);cursor:pointer;user-select:none;background:none;border:0;padding:0}
 .train:active{transform:translateX(-50%) scale(1.2)}
 .train:focus-visible{outline:3px solid var(--sky);outline-offset:4px;border-radius:12px}
-.stop{position:absolute;top:56px;transform:translateX(-50%);text-align:center;font-size:.85rem;width:80px}
+.stop{pointer-events:none;position:absolute;top:56px;transform:translateX(-50%);text-align:center;font-size:.85rem;width:80px}
 .stop i{display:block;width:24px;height:24px;margin:0 auto 4px;border-radius:50%;background:var(--card);border:4px solid var(--track);transition:.4s}
 .stop.on i{border-color:var(--good);background:var(--palm)}
 .stop b{font-weight:600}
@@ -90,7 +90,7 @@ h2{font-size:1.25rem;margin:0 0 12px}
 footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:30px}
 .bit{position:fixed;top:-30px;font-size:1.6rem;pointer-events:none;animation:fall linear forwards;z-index:9}
 @keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.9}}
-@media (prefers-reduced-motion:reduce){.fill,.train{transition:none}.bit{display:none}}
+@media (prefers-reduced-motion:reduce){.fill,.train{transition:none}}
 @media (max-width:520px){.hero .pyr{width:140px;height:84px}.hero .sun{width:60px;height:60px}}
 </style>
 </head>
@@ -214,7 +214,7 @@ $("sources").innerHTML = CONFIG.contributions.map(c =>
 const minShow = Math.max(pct, 1.5);
 requestAnimationFrame(() => setTimeout(() => {
   $("fill").style.width = pct + "%";
-  $("train").style.left = minShow + "%";
+  $("train").style.left = "clamp(24px, " + pct + "%, calc(100% - 24px))";
 }, 150));
 
 const t0 = performance.now(), dur = 1800;
@@ -237,8 +237,13 @@ function confetti() {
     setTimeout(() => s.remove(), 5500);
   }
 }
-$("train").addEventListener("click", confetti);
-if (pct >= 100) confetti();
+$("train").addEventListener("click", () => {
+  confetti();
+  const h = document.querySelector(".hint");
+  h.textContent = "Toot toot! 🚆";
+  setTimeout(() => h.textContent = "Tap the train 🎉", 1800);
+});
+if (pct >= 100 && !matchMedia('(prefers-reduced-motion: reduce)').matches) confetti();
 </script>
 </body>
 </html>
