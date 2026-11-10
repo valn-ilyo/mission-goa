@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MCA Excursion Fund Tracker</title>
+<meta name="description" content="How close is MCA 3rd Semester to Bengaluru, Goa and Mumbai?">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚆</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sky:#a9cdf2; --sun:#fbe38e; --palm:#a8d5b5; --palm-d:#5fa57a; --coral:#f4a6a0; --sand:#fdf6e4;
+  --bg:#fdf6e4; --card:#ffffff; --ink:#33406a; --muted:#6f7a9c;
+  --accent:#e0716b; --accent2:#fbe38e; --track:#e4ebf3; --good:#4f9d73;
+  --line:#dbe6f3; --shadow:0 6px 0 rgba(169,205,242,.55);
+  --speck:rgba(196,170,120,.22);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --sky:#3c4f86; --sun:#f3d97c; --palm:#4d8a6b; --palm-d:#8fcfa6; --coral:#e59a95; --sand:#1d2038;
+    --bg:#1d2038; --card:#2a2e4f; --ink:#f4efe2; --muted:#b5bbd9;
+    --accent:#f3a29c; --accent2:#f3d97c; --track:#3b4170; --good:#8fcfa6;
+    --line:#3b4170; --shadow:0 6px 0 rgba(0,0,0,.28); --speck:rgba(255,255,255,.05);
+  }
+}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;color:var(--ink);font-family:"Fredoka",ui-rounded,"Segoe UI",system-ui,sans-serif;line-height:1.4;
+  background-color:var(--bg);
+  background-image:radial-gradient(var(--speck) 1.2px,transparent 1.4px),radial-gradient(var(--speck) 1px,transparent 1.2px);
+  background-size:34px 34px,23px 23px;background-position:0 0,11px 13px}
+main{max-width:860px;margin:0 auto;padding:0 18px 60px}
+
+/* hero: sky, sun, palms and the pink pyramid */
+.hero{position:relative;overflow:hidden;background:var(--sky);margin:0 -18px 26px;padding:34px 18px 96px;text-align:center;
+  border-radius:0 0 36px 36px;isolation:isolate}
+.hero .sun{position:absolute;z-index:-1;width:84px;height:84px;border-radius:50%;background:var(--sun);right:12%;top:18px}
+.hero .pyr{position:absolute;z-index:-1;right:-30px;bottom:-4px;width:200px;height:120px;background:var(--coral);
+  clip-path:polygon(50% 0,100% 100%,0 100%);opacity:.9}
+.hero .palms{position:absolute;z-index:-1;left:0;bottom:0;width:100%;height:100px;pointer-events:none}
+h1{font-size:clamp(1.7rem,5vw,2.6rem);margin:0 0 4px;position:relative}
+.sub{color:var(--ink);opacity:.8;margin:0;position:relative}
+
+.card{background:var(--card);border:2px solid var(--line);border-radius:26px;padding:22px;box-shadow:var(--shadow);margin-bottom:22px}
+.big{text-align:center;margin-top:-64px;position:relative;z-index:2}
+.amount{font-size:clamp(2.8rem,13vw,5.5rem);font-weight:700;color:var(--accent);line-height:1}
+.of{color:var(--muted);font-size:1.1rem;margin-top:6px}
+.msg{margin-top:14px;font-size:1.15rem;font-weight:600;display:inline-block;background:color-mix(in srgb,var(--sun) 55%,transparent);padding:6px 16px;border-radius:999px}
+
+/* train track */
+.route{position:relative;height:120px;margin:10px 14px 0}
+.rail{position:absolute;left:0;right:0;top:62px;height:12px;background:var(--track);border-radius:8px}
+.fill{position:absolute;left:0;top:62px;height:12px;width:0;background:linear-gradient(90deg,var(--sun),var(--coral));border-radius:8px;transition:width 2s cubic-bezier(.2,.8,.2,1)}
+.ties{position:absolute;left:0;right:0;top:74px;height:8px;background:repeating-linear-gradient(90deg,var(--track) 0 3px,transparent 3px 16px);opacity:.9}
+.train{position:absolute;top:20px;font-size:2.4rem;left:0;transform:translateX(-50%);transition:left 2s cubic-bezier(.2,.8,.2,1);cursor:pointer;user-select:none;background:none;border:0;padding:0}
+.train:active{transform:translateX(-50%) scale(1.2)}
+.train:focus-visible{outline:3px solid var(--sky);outline-offset:4px;border-radius:12px}
+.stop{position:absolute;top:56px;transform:translateX(-50%);text-align:center;font-size:.85rem;width:80px}
+.stop i{display:block;width:24px;height:24px;margin:0 auto 4px;border-radius:50%;background:var(--card);border:4px solid var(--track);transition:.4s}
+.stop.on i{border-color:var(--good);background:var(--palm)}
+.stop b{font-weight:600}
+.stop.on b{color:var(--good)}
+.stop.first{transform:translateX(-20%)}
+.stop.last{transform:translateX(-80%)}
+.hint{text-align:center;color:var(--muted);font-size:.85rem;margin:6px 0 0}
+
+/* stats: one pastel per tile */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.stat{border-radius:20px;padding:16px;text-align:center;color:#33406a;box-shadow:var(--shadow);border:2px solid rgba(255,255,255,.6)}
+.stat:nth-child(1){background:#cfe7d6}
+.stat:nth-child(2){background:#fad3cf}
+.stat:nth-child(3){background:#bcd9f5}
+.stat:nth-child(4){background:#fcefb8}
+.stat strong{display:block;font-size:1.8rem;font-weight:700}
+.stat span{color:#55608a;font-size:.9rem}
+@media (prefers-color-scheme:dark){
+  .stat{border-color:transparent}
+  .stat:nth-child(1){background:#3f6b57}.stat:nth-child(2){background:#7a4f5c}
+  .stat:nth-child(3){background:#3f5a94}.stat:nth-child(4){background:#7d7040}
+  .stat{color:#fdf8ec}.stat span{color:#e4e6f4}
+}
+h2{font-size:1.25rem;margin:0 0 12px}
+.facts{margin:0;padding-left:20px}
+.facts li{margin:6px 0}
+.src{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:2px dashed var(--line)}
+.src:last-child{border:0}
+.src em{font-style:normal;font-weight:700;color:var(--good)}
+footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:30px}
+.bit{position:fixed;top:-30px;font-size:1.6rem;pointer-events:none;animation:fall linear forwards;z-index:9}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.9}}
+@media (prefers-reduced-motion:reduce){.fill,.train{transition:none}.bit{display:none}}
+@media (max-width:520px){.hero .pyr{width:140px;height:84px}.hero .sun{width:60px;height:60px}}
+</style>
+</head>
+<body>
+<main>
+  <header class="hero">
+    <div class="sun" aria-hidden="true"></div>
+    <div class="pyr" aria-hidden="true"></div>
+    <svg class="palms" viewBox="0 0 400 100" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+      <defs><g id="p"><path d="M0 0 C2 -20 -2 -40 1 -58" stroke="var(--palm-d)" stroke-width="4" fill="none" stroke-linecap="round"/>
+<g fill="var(--palm-d)"><ellipse cx="-14" cy="-60" rx="15" ry="4" transform="rotate(-25 1 -58)"/><ellipse cx="16" cy="-60" rx="15" ry="4" transform="rotate(25 1 -58)"/><ellipse cx="-10" cy="-68" rx="13" ry="3.5" transform="rotate(-60 1 -58)"/><ellipse cx="12" cy="-68" rx="13" ry="3.5" transform="rotate(60 1 -58)"/><ellipse cx="1" cy="-72" rx="12" ry="3.5" transform="rotate(90 1 -58)"/></g></g></defs>
+      <use href="#p" transform="translate(40 100) scale(1.2)"/>
+      <use href="#p" transform="translate(110 100) scale(.85)"/>
+      <use href="#p" transform="translate(360 100) scale(1)"/>
+    </svg>
+    <h1>🎒 Bengaluru · Goa · Mumbai or bust!</h1>
+    <p class="sub">MCA 3rd Semester · St. Anthony’s College · 16–28 January 2027</p>
+  </header>
+
+  <section class="card big" aria-live="polite">
+    <div class="amount" id="amount">₹0</div>
+    <div class="of">raised of <span id="goal"></span></div>
+    <div class="msg" id="msg"></div>
+  </section>
+
+  <section class="card">
+    <div class="route" role="progressbar" aria-label="Fundraising progress" aria-valuemin="0" aria-valuemax="100" id="route">
+      <div class="rail"></div><div class="fill" id="fill"></div><div class="ties"></div>
+      <button class="train" id="train" title="Toot toot!" aria-label="Celebrate">🚆</button>
+    </div>
+    <p class="hint">Tap the train 🎉</p>
+  </section>
+
+  <section class="stats" id="stats"></section>
+
+  <section class="card" style="margin-top:22px">
+    <h2>🧮 What our rupees have bought so far</h2>
+    <ul class="facts" id="facts"></ul>
+  </section>
+
+  <section class="card">
+    <h2>💰 Where it came from</h2>
+    <div id="sources"></div>
+  </section>
+
+  <footer>Last updated <span id="updated"></span> · Built by the MCA class 💛</footer>
+</main>
+
+<script>
+// ─── Config (edit this block, then commit) ───
+const CONFIG = {
+  goal: 400000,
+  departure: "2027-01-16T00:00:00+05:30",
+  updated: "10 Nov 2026",
+  // Add one line per new contribution; the total is summed automatically
+  contributions: [
+    { label: "MCA Fest ’26 stall profits (8 stalls)", amount: 8875 },
+    { label: "Anonymous donor", amount: 1000 }
+  ],
+  ticketPrice: 2600,   // one-way Guwahati to Bengaluru, per person
+  mealPerDay: 300
+};
+
+// ─── Helpers ───
+const inr = n => "₹" + Math.round(n).toLocaleString("en-IN");
+const $ = id => document.getElementById(id);
+
+const raised = CONFIG.contributions.reduce((s, c) => s + c.amount, 0);
+const goal = CONFIG.goal;
+const pct = Math.min(100, raised / goal * 100);
+const toGo = Math.max(0, goal - raised);
+const days = Math.max(0, Math.ceil((new Date(CONFIG.departure) - new Date()) / 864e5));
+
+// ─── Render ───
+$("goal").textContent = inr(goal);
+$("updated").textContent = CONFIG.updated;
+$("route").setAttribute("aria-valuenow", pct.toFixed(1));
+
+const stops = [["Shillong", 0], ["Bengaluru", 33.3], ["Goa", 66.6], ["Mumbai", 100]];
+const route = $("route");
+stops.forEach(([name, at], i) => {
+  const d = document.createElement("div");
+  d.className = "stop" + (pct >= at ? " on" : "") + (i === 0 ? " first" : i === stops.length - 1 ? " last" : "");
+  d.style.left = at + "%";
+  d.innerHTML = "<i></i><b>" + name + "</b>";
+  route.appendChild(d);
+});
+
+const tiers = [
+  [5, "The engine is warming up. Chai first, tracks next ☕"],
+  [25, "Pulling out of the platform… slowly but surely 🚉"],
+  [50, "Chugging along! Bengaluru, we’re coming 💻"],
+  [75, "Goa beaches are on the horizon 🏖️"],
+  [100, "Mumbai is in sight, so close! 🌆"],
+  [101, "ALL ABOARD! Goal reached 🎉🎉🎉"]
+];
+$("msg").textContent = tiers.find(t => pct < t[0])[1];
+
+const perDay = days ? toGo / days : 0;
+$("stats").innerHTML = [
+  [pct.toFixed(1) + "%", "of the way there"],
+  [inr(toGo), "still to go"],
+  [days, "days to departure"],
+  [inr(perDay), "needed per day"]
+].map(([v, l]) => '<div class="stat"><strong>' + v + "</strong><span>" + l + "</span></div>").join("");
+
+const tickets = Math.floor(raised / CONFIG.ticketPrice);
+const meals = Math.floor(raised / CONFIG.mealPerDay);
+$("facts").innerHTML =
+  "<li>🚆 <b>" + tickets + "</b> one-way train tickets from Guwahati to Bengaluru</li>" +
+  "<li>🍛 <b>" + meals + "</b> days of food for one person</li>" +
+  "<li>🎓 <b>" + (raised / 475600 * 100).toFixed(1) + "%</b> of the full budget of 29 travellers (₹4,75,600)</li>";
+
+$("sources").innerHTML = CONFIG.contributions.map(c =>
+  '<div class="src"><span>' + c.label + "</span><em>" + inr(c.amount) + "</em></div>").join("");
+
+// ─── Animations ───
+const minShow = Math.max(pct, 1.5);
+requestAnimationFrame(() => setTimeout(() => {
+  $("fill").style.width = pct + "%";
+  $("train").style.left = minShow + "%";
+}, 150));
+
+const t0 = performance.now(), dur = 1800;
+(function tick(now) {
+  const p = Math.min(1, (now - t0) / dur);
+  $("amount").textContent = inr(raised * (1 - Math.pow(1 - p, 3)));
+  if (p < 1) requestAnimationFrame(tick);
+})(t0);
+
+function confetti() {
+  const bits = ["🎉", "✨", "🎒", "🚆", "🌴", "💛", "🍫", "🎈"];
+  for (let i = 0; i < 28; i++) {
+    const s = document.createElement("span");
+    s.className = "bit";
+    s.textContent = bits[i % bits.length];
+    s.style.left = Math.random() * 100 + "vw";
+    s.style.animationDuration = 2 + Math.random() * 2.5 + "s";
+    s.style.animationDelay = Math.random() * .6 + "s";
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 5500);
+  }
+}
+$("train").addEventListener("click", confetti);
+if (pct >= 100) confetti();
+</script>
+</body>
+</html>
